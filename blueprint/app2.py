@@ -30,8 +30,8 @@ class AllDataView(Resource):
             task = ShowData.query.all()
             ShowData.delete(task)
             return make_response({"Status":True,"detail":"Data Delete"})
-        except:
-            return make_response({"status":False,"detail":"No any Data for delete"})
+        except Exception as e:
+            return make_response({"status":False,"detail":str(e)})
         
 class OneDataView(Resource):
     def get(self,id):
@@ -53,16 +53,16 @@ class OneDataView(Resource):
             ShowData.put()
             data=task.to_json(task)
             return make_response({"status":True,"detail":data})
-        except:
-            return make_response({"status":False,"detail":"Some Detail Missing"})
+        except Exception as e:
+            return make_response({"status":False,"detail":str(e)})
          
     def delete(self,id):
         try:
             task = ShowData.query.get_or_404(id)
             ShowData.delete(task)
             return make_response({"Status":True,"detail":"Data Delete"})
-        except:
-            return make_response({"status":False,"detail":"No data For delete"})
+        except Exception as e:
+            return make_response({"status":False,"detail":str(e)})
         
 class StudentView(Resource):
     def get(self):
@@ -91,8 +91,8 @@ class StudentDetail(Resource):
             student_data = Student.query.filter_by(id=id).first() 
             data=student_data.to_json(student_data)
             return make_response({"status":True,"detail":data})
-        except:
-            return make_response({"status":False,"detail":"Could not find Student with that id "})
+        except Exception as e:
+            return make_response({"status":False,"detail":str(e)})
         
     def put(self,id):
         try:
@@ -106,16 +106,16 @@ class StudentDetail(Resource):
             Student.put()
             data=student_data.to_json(student_data)
             return make_response({"status":True,"detail":data})
-        except:
-            return make_response({"status":False,"detail":"Some Detail Missing"})
+        except Exception as e:
+            return make_response({"status":False,"detail":str(e)})
         
     def delete(self,id):
         try:
             student_data = Student.query.get_or_404(id)
             Student.delete(student_data)
             return make_response({"Status":True,"detail":"Student Delete"})
-        except:
-            return make_response({"status":False,"detail":"No Student For delete"})
+        except Exception as e:
+            return make_response({"status":False,"detail":str(e)})
         
 class SchoolView(Resource):
     def get(self):
@@ -144,8 +144,8 @@ class SchoolDetail(Resource):
             school_data = School.query.filter_by(id=id).first() 
             data=school_data.to_json(school_data)
             return make_response({"status":True,"detail":data})
-        except:
-            return make_response({"status":False,"detail":"Could not find School with that id "})
+        except Exception as e:
+            return make_response({"status":False,"detail":str(e)})
         
     def put(self,id):
         try:
@@ -158,16 +158,16 @@ class SchoolDetail(Resource):
             School.put()
             data=school_data.to_json(school_data)
             return make_response({"status":True,"detail":data})
-        except:
-            return make_response({"status":False,"detail":"Some Detail Missing"})
+        except Exception as e:
+            return make_response({"status":False,"detail":str(e)})
         
     def delete(self,id):
         try:
             school_data = School.query.get_or_404(id)
             School.delete(school_data)
             return make_response({"Status":True,"detail":"Student Delete"})
-        except:
-            return make_response({"status":False,"detail":"No Student For delete"})    
+        except Exception as e:
+            return make_response({"status":False,"detail":str(e)})    
         
 class SchoolStudent(Resource):
     def get(self,school_id):
