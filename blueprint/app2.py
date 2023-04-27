@@ -39,8 +39,8 @@ class OneDataView(Resource):
             task = ShowData.query.filter_by(nid=id).first() 
             data=task.to_json(task)
             return make_response({"status":True,"detail":data})
-        except:
-            return make_response({"status":False,"detail":"Could not find task with that id "})
+        except Exception as e:
+            return make_response({"status":False,"detail":str(e)})
         
     def put(self,id):
         try:
