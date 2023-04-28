@@ -3,6 +3,22 @@ from flask_restful import Resource,abort,marshal_with,fields
 from model import ShowData,db,Modification,Student,School
 #from db import method
 from datetime import datetime
+import logging
+
+#Create a logger
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.INFO)
+
+
+# Create a file handler
+handler = logging.FileHandler('app.log')
+handler.setLevel(logging.INFO)
+
+formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+handler.setFormatter(formatter)
+
+# Add the handler to the logger
+logger.addHandler(handler)
 
 class AllDataView(Resource):
     def get(self):
@@ -11,8 +27,10 @@ class AllDataView(Resource):
             if not tasks:
                 return make_response({"status":False,"detail":"No Data In Table"})
             data = [task.to_json(task) for task in tasks]
+            logger.info('Get Request Received')
             return make_response({"status":True,"detail":data})
         except Exception as e:
+            logger.error("%s",e)
             return make_response({"status":False,"detail":str(e)})
         
     def post(self):
@@ -21,16 +39,20 @@ class AllDataView(Resource):
             create_data = ShowData(data)
             ShowData.add(create_data)
             data=create_data.to_json(create_data)
+            logger.info('POST Request Received')
             return make_response({"status":True,"detail":data})
         except Exception as e:
+            logger.error("%s",e)
             return make_response({"status":False,"detail":str(e)})
 
     def delete(self):
         try:
             task = ShowData.query.all()
             ShowData.delete(task)
+            logger.info('Delete Request Received')
             return make_response({"Status":True,"detail":"Data Delete"})
         except Exception as e:
+            logger.error("%s",e)
             return make_response({"status":False,"detail":str(e)})
         
 class OneDataView(Resource):
@@ -38,8 +60,10 @@ class OneDataView(Resource):
         try:
             task = ShowData.query.filter_by(nid=id).first() 
             data=task.to_json(task)
+            logger.info('Get Request Received')
             return make_response({"status":True,"detail":data})
         except Exception as e:
+            logger.error("%s",e)
             return make_response({"status":False,"detail":str(e)})
         
     def put(self,id):
@@ -52,16 +76,20 @@ class OneDataView(Resource):
             task.summary = data.get('summary')
             ShowData.put()
             data=task.to_json(task)
+            logger.info('PUT Request Received')
             return make_response({"status":True,"detail":data})
         except Exception as e:
+            logger.error("%s",e)
             return make_response({"status":False,"detail":str(e)})
          
     def delete(self,id):
         try:
             task = ShowData.query.get_or_404(id)
             ShowData.delete(task)
+            logger.info('DELETE Request Received')
             return make_response({"Status":True,"detail":"Data Delete"})
         except Exception as e:
+            logger.error("%s",e)
             return make_response({"status":False,"detail":str(e)})
         
 class StudentView(Resource):
@@ -71,8 +99,10 @@ class StudentView(Resource):
             if not tasks:
                 return make_response({"status":False,"detail":"No Student Data In Table"})
             data = [task.to_json(task) for task in tasks]
+            logger.info('Get Request Received')
             return make_response({"status":True,"detail":data})
         except Exception as e:
+            logger.error("%s",e)
             return make_response({"status":False,"detail":str(e)})
 
     def post(self):
@@ -81,8 +111,10 @@ class StudentView(Resource):
             create_data = Student(data)
             Student.add(create_data)
             data=create_data.to_json(create_data)
+            logger.info('POST Request Received')
             return make_response({"status":True,"detail":data})
         except Exception as e:
+            logger.error("%s",e)
             return make_response({"status":False,"detail":str(e)})
         
 class StudentDetail(Resource):
@@ -90,8 +122,10 @@ class StudentDetail(Resource):
         try:
             student_data = Student.query.filter_by(id=id).first() 
             data=student_data.to_json(student_data)
+            logger.info('Get Request Received')
             return make_response({"status":True,"detail":data})
         except Exception as e:
+            logger.error("%s",e)
             return make_response({"status":False,"detail":str(e)})
         
     def put(self,id):
@@ -105,16 +139,20 @@ class StudentDetail(Resource):
             student_data.modified_at=datetime.utcnow()
             Student.put()
             data=student_data.to_json(student_data)
+            logger.info('PUT Request Received')
             return make_response({"status":True,"detail":data})
         except Exception as e:
+            logger.error("%s",e)
             return make_response({"status":False,"detail":str(e)})
         
     def delete(self,id):
         try:
             student_data = Student.query.get_or_404(id)
             Student.delete(student_data)
+            logger.info('DELETE Request Received')
             return make_response({"Status":True,"detail":"Student Delete"})
         except Exception as e:
+            logger.error("%s",e)
             return make_response({"status":False,"detail":str(e)})
         
 class SchoolView(Resource):
@@ -124,8 +162,10 @@ class SchoolView(Resource):
             if not school_data:
                 return make_response({"status":False,"detail":"No School Data In Table"})
             data = [task.to_json(task) for task in school_data]
+            logger.info('Get Request Received')
             return make_response({"status":True,"detail":data})
         except Exception as e:
+            logger.error("%s",e)
             return make_response({"status":False,"detail":str(e)})
         
     def post(self):
@@ -134,18 +174,25 @@ class SchoolView(Resource):
             create_data = School(data)
             School.add(create_data)
             data=create_data.to_json(create_data)
+            logger.info('POST Request Received')
             return make_response({"status":True,"detail":data})
         except Exception as e:
+            logger.error("%s",e)
             return make_response({"status":False,"detail":str(e)})
         
 class SchoolDetail(Resource):
     def get(self,id):
         try:
-            school_data = School.query.filter_by(id=id).first() 
-            data=school_data.to_json(school_data)
-            return make_response({"status":True,"detail":data})
+           # print(id)
+            school=School.query.get_or_404(id)
+            if not school:
+                return make_response({"status":False,"details":"This School Not Registered"})
+            students=[student.name for student in school.students]
+            logger.info('%s Get Request Received',students)
+            return make_response({"status":True,"detail":students})
         except Exception as e:
-            return make_response({"status":False,"detail":str(e)})
+            logger.error("%s",e)
+            return make_response({"status":False,"details":str(e)})
         
     def put(self,id):
         try:
@@ -157,26 +204,19 @@ class SchoolDetail(Resource):
             school_data.modified_at=datetime.utcnow()
             School.put()
             data=school_data.to_json(school_data)
+            logger.info('PUT Request Received')
             return make_response({"status":True,"detail":data})
         except Exception as e:
+            logger.error("%s",e)
             return make_response({"status":False,"detail":str(e)})
         
     def delete(self,id):
         try:
             school_data = School.query.get_or_404(id)
             School.delete(school_data)
+            logger.info('DELETE Request Received')
             return make_response({"Status":True,"detail":"Student Delete"})
         except Exception as e:
+            logger.error("%s",e)
             return make_response({"status":False,"detail":str(e)})    
         
-class SchoolStudent(Resource):
-    def get(self,school_id):
-        try:
-            print(school_id)
-            school=School.query.get_or_404(school_id)
-            if not school:
-                return make_response({"status":False,"details":"This School Not Registered"})
-            students=[student.name for student in school.students]
-            return make_response({"status":True,"detail":students})
-        except Exception as e:
-            return make_response({"status":False,"details":str(e)})

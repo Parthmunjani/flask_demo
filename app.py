@@ -1,7 +1,8 @@
 from flask import Blueprint, Flask,jsonify,request
 from flask_restful import Resource,Api,reqparse,abort
-from blueprint.app2 import AllDataView,OneDataView,StudentView,StudentDetail,SchoolView,SchoolDetail,SchoolStudent
+from blueprint.app2 import AllDataView,OneDataView,StudentView,StudentDetail,SchoolView,SchoolDetail
 from flask_migrate import Migrate
+import logging
 # from blueprint.app2 import dataCtrlr
 
 from model import db
@@ -31,7 +32,7 @@ api.add_resource(StudentView,'/student')
 api.add_resource(StudentDetail,'/student/<int:id>')
 api.add_resource(SchoolView,'/school')
 api.add_resource(SchoolDetail,'/school/<int:id>')
-api.add_resource(SchoolStudent,'/schools/<int:school_id>')
+
 
 if __name__=='__main__':
     app.run(debug=True, port=3000)
