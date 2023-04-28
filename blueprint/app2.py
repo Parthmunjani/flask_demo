@@ -219,4 +219,4 @@ class SchoolDetail(Resource):
         except Exception as e:
             logger.error("%s",e)
             return make_response({"status":False,"detail":str(e)})    
-        
+            
