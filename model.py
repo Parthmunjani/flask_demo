@@ -22,7 +22,7 @@ class Modification:
 class ShowData(db.Model,Modification):
     nid=db.Column(db.Integer,primary_key=True)
     task=db.Column(db.String(200))
-    summary=db.Column(db.String(200))
+    summary=db.Column(db.String(200))   
     
     def to_json(self, data):
         data={"id":data.nid,"task":data.task,"summary":data.summary}

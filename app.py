@@ -9,7 +9,7 @@ from model import db
 from api import Show,Index
 
 app=Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI']='sqlite:///sqlite.db'
+app.config['SQLALCHEMY_DATABASE_URI']='sqlite:///instance/sqlite.db'
     
 
 db.init_app(app)

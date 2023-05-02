@@ -4,6 +4,7 @@ from model import ShowData,db,Modification,Student,School
 #from db import method
 from datetime import datetime
 import logging
+import time
 
 #Create a logger
 logger = logging.getLogger(__name__)
@@ -20,7 +21,17 @@ handler.setFormatter(formatter)
 # Add the handler to the logger
 logger.addHandler(handler)
 
+def measure_time(func):
+    def wrapper(*args, **kwargs):
+        start_time = time.monotonic()
+        response = func(*args, **kwargs)
+        end_time = time.monotonic()
+        logger.info(f'{func.__name__} took {end_time - start_time:.6f} seconds')
+        return response
+    return wrapper
+
 class AllDataView(Resource):
+    @measure_time
     def get(self):
         try:
             tasks = ShowData.query.all()
@@ -33,6 +44,7 @@ class AllDataView(Resource):
             logger.error("%s",e)
             return make_response({"status":False,"detail":str(e)})
         
+    @measure_time    
     def post(self):
         try:
             data=request.get_json()
@@ -44,7 +56,8 @@ class AllDataView(Resource):
         except Exception as e:
             logger.error("%s",e)
             return make_response({"status":False,"detail":str(e)})
-
+        
+    @measure_time
     def delete(self):
         try:
             task = ShowData.query.all()
@@ -56,6 +69,7 @@ class AllDataView(Resource):
             return make_response({"status":False,"detail":str(e)})
         
 class OneDataView(Resource):
+    @measure_time
     def get(self,id):
         try:
             task = ShowData.query.filter_by(nid=id).first() 
@@ -65,7 +79,8 @@ class OneDataView(Resource):
         except Exception as e:
             logger.error("%s",e)
             return make_response({"status":False,"detail":str(e)})
-        
+    
+    @measure_time    
     def put(self,id):
         try:
             data=request.get_json()
@@ -81,7 +96,8 @@ class OneDataView(Resource):
         except Exception as e:
             logger.error("%s",e)
             return make_response({"status":False,"detail":str(e)})
-         
+    
+    @measure_time     
     def delete(self,id):
         try:
             task = ShowData.query.get_or_404(id)
@@ -93,6 +109,7 @@ class OneDataView(Resource):
             return make_response({"status":False,"detail":str(e)})
         
 class StudentView(Resource):
+    @measure_time
     def get(self):
         try:
             tasks =Student.query.all()
@@ -104,7 +121,8 @@ class StudentView(Resource):
         except Exception as e:
             logger.error("%s",e)
             return make_response({"status":False,"detail":str(e)})
-
+        
+    @measure_time
     def post(self):
         try:
             data=request.get_json()
@@ -118,6 +136,7 @@ class StudentView(Resource):
             return make_response({"status":False,"detail":str(e)})
         
 class StudentDetail(Resource):
+    @measure_time
     def get(self,id):
         try:
             student_data = Student.query.filter_by(id=id).first() 
@@ -128,6 +147,7 @@ class StudentDetail(Resource):
             logger.error("%s",e)
             return make_response({"status":False,"detail":str(e)})
         
+    @measure_time    
     def put(self,id):
         try:
             data=request.get_json()
@@ -144,7 +164,8 @@ class StudentDetail(Resource):
         except Exception as e:
             logger.error("%s",e)
             return make_response({"status":False,"detail":str(e)})
-        
+       
+    @measure_time   
     def delete(self,id):
         try:
             student_data = Student.query.get_or_404(id)
@@ -156,6 +177,7 @@ class StudentDetail(Resource):
             return make_response({"status":False,"detail":str(e)})
         
 class SchoolView(Resource):
+    @measure_time
     def get(self):
         try:
             school_data =School.query.all()
@@ -167,7 +189,8 @@ class SchoolView(Resource):
         except Exception as e:
             logger.error("%s",e)
             return make_response({"status":False,"detail":str(e)})
-        
+    
+    @measure_time    
     def post(self):
         try:
             data=request.get_json()
@@ -181,6 +204,7 @@ class SchoolView(Resource):
             return make_response({"status":False,"detail":str(e)})
         
 class SchoolDetail(Resource):
+    @measure_time
     def get(self,id):
         try:
            # print(id)
@@ -193,7 +217,8 @@ class SchoolDetail(Resource):
         except Exception as e:
             logger.error("%s",e)
             return make_response({"status":False,"details":str(e)})
-        
+     
+    @measure_time    
     def put(self,id):
         try:
             data=request.get_json()
@@ -210,6 +235,7 @@ class SchoolDetail(Resource):
             logger.error("%s",e)
             return make_response({"status":False,"detail":str(e)})
         
+    @measure_time    
     def delete(self,id):
         try:
             school_data = School.query.get_or_404(id)
